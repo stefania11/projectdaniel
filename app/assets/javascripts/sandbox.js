@@ -1,13 +1,13 @@
  var trumpet = 'trumpet';
  var flute = 'flute';
  var violin = 'violin';
- var double_bass = 'double_bass';
+ var harp = 'harp';
  var cello = 'cello';
  var tuba = 'tuba';
- var kickdrum = 'kickdrum';
+ var kick = 'kick';
  var snare = 'snare';
- var high_hat = 'high_hat';
- var instruments = [trumpet, flute, violin, double_bass, cello, tuba, kickdrum, snare, high_hat];
+ var hihat = 'hihat';
+ var instruments = [trumpet, flute, violin, harp, cello, tuba, kick, snare, hihat];
  //keys: WASDFG space up down
  var w = 87;
  var a = 65;
@@ -18,32 +18,47 @@
  var space = 32;
  var up = 38;
  var down = 40;
- var keys = [w, a,s,d,f,g,space,up,down];
+ var keys = [w,a,s,d,f,g,space,up,down];
  var mappings = {};
+ var playing = [];
+
  for (var i = 0 ; i <keys.length; i++){
      mappings[keys[i]] = instruments[i];
  }
- var audio = ["trumpet1.mp3", "trumpet2.mp3"];
+ var audio = [];
+ var drums = ['hihat', 'snare', 'kick'];
+ for(var i = 0; i < instruments.length; i++){
+   var suffix = "mp3";
+   audio.push(instruments[i] + "1."+ suffix);
+   playing.push(false);
+ }
 
-var playing = false;
 $(document).keydown(function( event ) {
     var keycode = event.which;
     if(keys.indexOf(keycode)>-1){
-        var elem = $("#" + mappings[keycode]);
-        if(!playing){
-            playing = true;
+      var cooldown = 2500;
+      var instrument = mappings[keycode];
+      if(drums.indexOf(instrument) > -1){
+        cooldown = 50;
+      }
+        var elem = $("#" + instrument);
+        var index_of_instrument = keys.indexOf(keycode);
+        if(!playing[index_of_instrument]){
+            playing[index_of_instrument] = true;
             elem.css("opacity", 1);
-            new Audio(audio[0]).play();
+            new Audio(audio[index_of_instrument]).play();
             $("#" + mappings[keycode]).animate({
-                width: "1450.4px",
-                height: "449.6px"
+                width: "320px",
+                height: "320px",
+                "background-size": "100%"
             }, 500, function() {
                 elem.animate({
-                    width: "1359.75px",
-                    height: "421.5px"
-                }, 2500, function() {
+                    width: "160px",
+                    height: "160px",
+                    "background-size": "100%"
+                }, cooldown, function() {
                     elem.css("opacity",.5);
-                    playing = false;
+                    playing[index_of_instrument] = false;
                 });
             });
         }
